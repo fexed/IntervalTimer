@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         final FloatingActionButton stopfab = findViewById(R.id.stopbtn);
         final ImageButton plusbtn = findViewById(R.id.plusbtn);
         final ImageButton minusbtn = findViewById(R.id.minusbtn);
+        final Button led = findViewById(R.id.led);
         updatehandler = new Handler();
         beephandler = new Handler();
         timetxtv = findViewById(R.id.timetext);
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
                 ((View) stopfab).setVisibility(View.VISIBLE);
                 plusbtn.setVisibility(View.INVISIBLE);
                 minusbtn.setVisibility(View.INVISIBLE);
+                led.setBackgroundColor(getResources().getColor((R.color.colorPrimaryDark)));
             }
         };
         View.OnClickListener pause = new View.OnClickListener() {
@@ -69,12 +71,12 @@ public class MainActivity extends AppCompatActivity {
                 ((View) stopfab).setVisibility(View.INVISIBLE);
                 plusbtn.setVisibility(View.VISIBLE);
                 minusbtn.setVisibility(View.VISIBLE);
+                led.setBackgroundColor(getResources().getColor((R.color.colorAccent)));
             }
         };
 
         startfab.setOnClickListener(start);
         stopfab.setOnClickListener(pause);
-
 
         plusbtn.setOnClickListener(new View.OnClickListener() {
             @Override
