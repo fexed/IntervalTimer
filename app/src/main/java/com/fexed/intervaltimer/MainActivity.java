@@ -81,7 +81,8 @@ public class MainActivity extends AppCompatActivity {
         plusbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pref.edit().putLong("interval", pref.getLong("interval", 30000) + 5000).apply();
+                long interval = pref.getLong("interval", 30000) + 5000;
+                pref.edit().putLong("interval", (interval ==  6000 ? 5000 : interval)).apply();
                 intervaltxtv.setText(strFromMillis(pref.getLong("interval", 30000)));
             }
         });
@@ -89,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 long interval = pref.getLong("interval", 30000) - 5000;
-                pref.edit().putLong("interval", (interval <  5000 ? 5000 : interval)).apply();
+                pref.edit().putLong("interval", (interval <  1000 ? 1000 : interval)).apply();
                 intervaltxtv.setText(strFromMillis(pref.getLong("interval", 30000)));
             }
         });
