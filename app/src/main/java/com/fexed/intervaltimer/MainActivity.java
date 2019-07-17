@@ -1,5 +1,6 @@
 package com.fexed.intervaltimer;
 
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,7 +21,8 @@ public class MainActivity extends AppCompatActivity {
     private int s, m, millis;
     private Handler updatehandler, beephandler;
     private TextView timetxtv, intervaltxtv;
-    public MediaPlayer mp;
+    private MediaPlayer mp;
+    private SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +31,13 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        pref = this.getSharedPreferences("com.fexed.intervaltimer", MODE_PRIVATE);
+
         updatehandler = new Handler();
         beephandler = new Handler();
         timetxtv = findViewById(R.id.timetext);
         intervaltxtv = findViewById(R.id.intervaltext);
+        intervaltxtv.setText(strFromMillis(pref.getLong("interval", 30000)));
 
         mp = MediaPlayer.create(MainActivity.this, R.raw.beep);
 
@@ -43,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 starttime = SystemClock.uptimeMillis();
                 updatehandler.postDelayed(updaterrunnable, 0);
-                beephandler.postDelayed(beeprunnable, 5000);
+                beephandler.postDelayed(beeprunnable, pref.getLong("interval", 30000));
                 ((View) startfab).setVisibility(View.INVISIBLE);
                 ((View) stopfab).setVisibility(View.VISIBLE);
             }
@@ -77,11 +82,18 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    public String strFromMillis(long milliseconds) {
+        int seconds, minutes;
+        seconds = (int) (milliseconds / 1000);
+        minutes = seconds / 60;
+        seconds = seconds % 60;
+        return ("" + String.format("%02d", minutes) + ":"+ String.format("%02d", seconds));
+    }
+
     public Runnable beeprunnable = new Runnable() {
         public void run() {
-            intervaltxtv.setText(""+millisecondtime);
             mp.start();
-            beephandler.postDelayed(this, 5000);
+            beephandler.postDelayed(this, pref.getLong("interval", 30000));
         }
     };
 
