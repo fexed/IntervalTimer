@@ -35,6 +35,10 @@ public class MainActivity extends AppCompatActivity {
 
         pref = this.getSharedPreferences("com.fexed.intervaltimer", MODE_PRIVATE);
 
+        final FloatingActionButton startfab = findViewById(R.id.startbtn);
+        final FloatingActionButton stopfab = findViewById(R.id.stopbtn);
+        final ImageButton plusbtn = findViewById(R.id.plusbtn);
+        final ImageButton minusbtn = findViewById(R.id.minusbtn);
         updatehandler = new Handler();
         beephandler = new Handler();
         timetxtv = findViewById(R.id.timetext);
@@ -43,8 +47,6 @@ public class MainActivity extends AppCompatActivity {
 
         mp = MediaPlayer.create(MainActivity.this, R.raw.beep);
 
-        final FloatingActionButton startfab = findViewById(R.id.startbtn);
-        final FloatingActionButton stopfab = findViewById(R.id.stopbtn);
         View.OnClickListener start = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -53,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
                 beephandler.postDelayed(beeprunnable, pref.getLong("interval", 30000));
                 ((View) startfab).setVisibility(View.INVISIBLE);
                 ((View) stopfab).setVisibility(View.VISIBLE);
+                plusbtn.setVisibility(View.INVISIBLE);
+                minusbtn.setVisibility(View.INVISIBLE);
             }
         };
         View.OnClickListener pause = new View.OnClickListener() {
@@ -63,13 +67,15 @@ public class MainActivity extends AppCompatActivity {
                 beephandler.removeCallbacks(beeprunnable);
                 ((View) startfab).setVisibility(View.VISIBLE);
                 ((View) stopfab).setVisibility(View.INVISIBLE);
+                plusbtn.setVisibility(View.VISIBLE);
+                minusbtn.setVisibility(View.VISIBLE);
             }
         };
 
         startfab.setOnClickListener(start);
         stopfab.setOnClickListener(pause);
 
-        ImageButton plusbtn = findViewById(R.id.plusbtn);
+
         plusbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
                 intervaltxtv.setText(strFromMillis(pref.getLong("interval", 30000)));
             }
         });
-        ImageButton minusbtn = findViewById(R.id.minusbtn);
         minusbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
