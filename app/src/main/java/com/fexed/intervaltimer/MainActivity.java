@@ -11,6 +11,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -66,6 +68,25 @@ public class MainActivity extends AppCompatActivity {
 
         startfab.setOnClickListener(start);
         stopfab.setOnClickListener(pause);
+
+        ImageButton plusbtn = findViewById(R.id.plusbtn);
+        plusbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pref.edit().putLong("interval", pref.getLong("interval", 30000) + 5000).apply();
+                intervaltxtv.setText(strFromMillis(pref.getLong("interval", 30000)));
+            }
+        });
+        ImageButton minusbtn = findViewById(R.id.minusbtn);
+        minusbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                long interval = pref.getLong("interval", 30000) - 5000;
+                pref.edit().putLong("interval", (interval <  5000 ? 5000 : interval)).apply();
+                intervaltxtv.setText(strFromMillis(pref.getLong("interval", 30000)));
+            }
+        });
+
     }
 
     public Runnable updaterrunnable = new Runnable() {
