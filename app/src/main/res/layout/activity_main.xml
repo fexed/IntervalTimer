@@ -35,6 +35,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/timetext" />
 
+    <ImageButton
+        android:id="@+id/plusbtn"
+        style="@style/Widget.AppCompat.ImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:src="@drawable/add_b"
+        app:layout_constraintBottom_toBottomOf="@+id/intervaltext"
+        app:layout_constraintStart_toEndOf="@+id/intervaltext"
+        app:layout_constraintTop_toTopOf="@+id/intervaltext"
+        tools:src="@drawable/add_b" />
+
+    <ImageButton
+        android:id="@+id/minusbtn"
+        style="@style/Widget.AppCompat.ImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/remove_b"
+        app:layout_constraintBottom_toBottomOf="@+id/intervaltext"
+        app:layout_constraintEnd_toStartOf="@+id/intervaltext"
+        app:layout_constraintTop_toTopOf="@+id/intervaltext"
+        tools:src="@drawable/remove_b" />
+
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

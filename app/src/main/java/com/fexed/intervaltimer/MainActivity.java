@@ -1,5 +1,6 @@
 package com.fexed.intervaltimer;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -11,12 +12,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import java.io.IOException;
+
 public class MainActivity extends AppCompatActivity {
 
     private long millisecondtime, starttime, updatetime, timebuff = 0L;
     private int s, m, millis;
     private Handler updatehandler, beephandler;
-    private TextView timetxtv;
+    private TextView timetxtv, intervaltxtv;
+    public MediaPlayer mp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +30,11 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         updatehandler = new Handler();
+        beephandler = new Handler();
         timetxtv = findViewById(R.id.timetext);
+        intervaltxtv = findViewById(R.id.intervaltext);
+
+        mp = MediaPlayer.create(MainActivity.this, R.raw.beep);
 
         final FloatingActionButton startfab = findViewById(R.id.startbtn);
         final FloatingActionButton stopfab = findViewById(R.id.stopbtn);
@@ -34,7 +42,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 starttime = SystemClock.uptimeMillis();
-                updatehandler.postDelayed(runnable, 0);
+                updatehandler.postDelayed(updaterrunnable, 0);
+                beephandler.postDelayed(beeprunnable, 5000);
                 ((View) startfab).setVisibility(View.INVISIBLE);
                 ((View) stopfab).setVisibility(View.VISIBLE);
             }
@@ -43,7 +52,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 timebuff += millisecondtime;
-                updatehandler.removeCallbacks(runnable);
+                updatehandler.removeCallbacks(updaterrunnable);
+                beephandler.removeCallbacks(beeprunnable);
                 ((View) startfab).setVisibility(View.VISIBLE);
                 ((View) stopfab).setVisibility(View.INVISIBLE);
             }
@@ -53,28 +63,26 @@ public class MainActivity extends AppCompatActivity {
         stopfab.setOnClickListener(pause);
     }
 
-    public Runnable runnable = new Runnable() {
-
+    public Runnable updaterrunnable = new Runnable() {
         public void run() {
-
             millisecondtime = SystemClock.uptimeMillis() - starttime;
-
             updatetime = timebuff + millisecondtime;
-
             s = (int) (updatetime / 1000);
-
             m = s / 60;
-
             s = s % 60;
-
             millis = (int) (updatetime % 1000);
 
-            timetxtv.setText("" + m + ":"
-                    + String.format("%02d", s));
-
+            timetxtv.setText("" + String.format("%02d", m) + ":"+ String.format("%02d", s));
             updatehandler.postDelayed(this, 0);
         }
+    };
 
+    public Runnable beeprunnable = new Runnable() {
+        public void run() {
+            intervaltxtv.setText(""+millisecondtime);
+            mp.start();
+            beephandler.postDelayed(this, 5000);
+        }
     };
 
     @Override
