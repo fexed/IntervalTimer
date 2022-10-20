@@ -5,17 +5,17 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
-import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,51 +40,54 @@ public class MainActivity extends AppCompatActivity {
         final ImageButton plusbtn = findViewById(R.id.plusbtn);
         final ImageButton minusbtn = findViewById(R.id.minusbtn);
         final Button led = findViewById(R.id.led);
-        updatehandler = new Handler();
-        beephandler = new Handler();
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.setStatusBarColor(getResources().getColor(R.color.colorAccent));
+
         timetxtv = findViewById(R.id.timetext);
         intervaltxtv = findViewById(R.id.intervaltext);
+        updatehandler = new Handler();
+        beephandler = new Handler();
+        timetxtv.setText("00:00");
         intervaltxtv.setText(strFromMillis(pref.getLong("interval", 30000)));
 
         mp = MediaPlayer.create(MainActivity.this, R.raw.beep);
 
-        View.OnClickListener start = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                starttime = SystemClock.uptimeMillis();
-                updatehandler.postDelayed(updaterrunnable, 0);
-                beephandler.postDelayed(beeprunnable, pref.getLong("interval", 30000));
-                ((View) startfab).setVisibility(View.INVISIBLE);
-                ((View) stopfab).setVisibility(View.VISIBLE);
-                plusbtn.setVisibility(View.INVISIBLE);
-                minusbtn.setVisibility(View.INVISIBLE);
-                led.setBackgroundColor(getResources().getColor((R.color.colorPrimaryDark)));
-            }
+        View.OnClickListener start = view -> {
+            starttime = SystemClock.uptimeMillis();
+            updatehandler.postDelayed(updaterrunnable, 0);
+            beephandler.postDelayed(beeprunnable, pref.getLong("interval", 30000));
+            ((View) startfab).setVisibility(View.INVISIBLE);
+            ((View) stopfab).setVisibility(View.VISIBLE);
+            plusbtn.setVisibility(View.INVISIBLE);
+            minusbtn.setVisibility(View.INVISIBLE);
+            led.setBackgroundColor(getResources().getColor((R.color.colorPrimaryDark)));
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         };
-        View.OnClickListener pause = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                timebuff += millisecondtime;
-                updatehandler.removeCallbacks(updaterrunnable);
-                beephandler.removeCallbacks(beeprunnable);
-                ((View) startfab).setVisibility(View.VISIBLE);
-                ((View) stopfab).setVisibility(View.INVISIBLE);
-                plusbtn.setVisibility(View.VISIBLE);
-                minusbtn.setVisibility(View.VISIBLE);
-                led.setBackgroundColor(getResources().getColor((R.color.colorAccent)));
-            }
+
+        View.OnClickListener pause = view -> {
+            timebuff += millisecondtime;
+            updatehandler.removeCallbacks(updaterrunnable);
+            beephandler.removeCallbacks(beeprunnable);
+            ((View) startfab).setVisibility(View.VISIBLE);
+            ((View) stopfab).setVisibility(View.INVISIBLE);
+            plusbtn.setVisibility(View.VISIBLE);
+            minusbtn.setVisibility(View.VISIBLE);
+            led.setBackgroundColor(getResources().getColor((R.color.colorAccent)));
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(getResources().getColor(R.color.colorAccent));
         };
 
         startfab.setOnClickListener(start);
         stopfab.setOnClickListener(pause);
 
-        plusbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                long interval = pref.getLong("interval", 30000) + 5000;
-                pref.edit().putLong("interval", (interval ==  6000 ? 5000 : interval)).apply();
-                intervaltxtv.setText(strFromMillis(pref.getLong("interval", 30000)));
-            }
+        plusbtn.setOnClickListener(v -> {
+            long interval = pref.getLong("interval", 30000) + 5000;
+            pref.edit().putLong("interval", (interval ==  6000 ? 5000 : interval)).apply();
+            intervaltxtv.setText(strFromMillis(pref.getLong("interval", 30000)));
         });
         minusbtn.setOnClickListener(new View.OnClickListener() {
             @Override

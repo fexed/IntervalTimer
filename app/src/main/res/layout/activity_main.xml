@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -18,22 +18,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.9" />
+        app:layout_constraintVertical_bias="0.9"
+        tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
     <TextView
         android:id="@+id/timetext"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:text="00:00"
+        android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textSize="85sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="00:00" />
 
     <TextView
         android:id="@+id/intervaltext"
@@ -42,12 +44,12 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="00:00"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textSize="35sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/timetext" />
+        app:layout_constraintTop_toBottomOf="@+id/timetext"
+        tools:text="00:00" />
 
     <ImageButton
         android:id="@+id/plusbtn"
@@ -59,6 +61,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/intervaltext"
         app:layout_constraintStart_toEndOf="@+id/intervaltext"
         app:layout_constraintTop_toTopOf="@+id/intervaltext"
+        tools:ignore="SpeakableTextPresentCheck"
         tools:src="@drawable/add_b" />
 
     <ImageButton
@@ -71,9 +74,10 @@
         app:layout_constraintBottom_toBottomOf="@+id/intervaltext"
         app:layout_constraintEnd_toStartOf="@+id/intervaltext"
         app:layout_constraintTop_toTopOf="@+id/intervaltext"
+        tools:ignore="SpeakableTextPresentCheck"
         tools:src="@drawable/remove_b" />
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
@@ -82,16 +86,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/startbtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -101,9 +105,10 @@
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/play_w" />
+        app:srcCompat="@drawable/play_w"
+        tools:ignore="SpeakableTextPresentCheck" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/stopbtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -116,4 +121,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/pause_w" />
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
