@@ -11,8 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Vibrator;
 
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -35,20 +33,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        pref = this.getSharedPreferences("com.fexed.intervaltimer", MODE_PRIVATE);
-
         final FloatingActionButton startfab = findViewById(R.id.startbtn);
         final FloatingActionButton stopfab = findViewById(R.id.stopbtn);
         final ImageButton plusbtn = findViewById(R.id.plusbtn);
         final ImageButton minusbtn = findViewById(R.id.minusbtn);
         final Button led = findViewById(R.id.led);
-        Window window = getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.setStatusBarColor(getResources().getColor(R.color.colorAccent));
-
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         progressLedR = findViewById(R.id.progressLedR);
         progressLedL = findViewById(R.id.progressLedL);
@@ -56,10 +45,16 @@ public class MainActivity extends AppCompatActivity {
         intervaltxtv = findViewById(R.id.intervaltext);
         updatehandler = new Handler();
         beephandler = new Handler();
+        mp = MediaPlayer.create(MainActivity.this, R.raw.beep);
+        pref = this.getSharedPreferences("com.fexed.intervaltimer", MODE_PRIVATE);
+
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.setStatusBarColor(getResources().getColor(R.color.colorAccent));
+
         timetxtv.setText("00:00");
         intervaltxtv.setText(strFromMillis(pref.getLong("interval", 30000)));
-
-        mp = MediaPlayer.create(MainActivity.this, R.raw.beep);
 
         View.OnClickListener start = view -> {
             starttime = SystemClock.uptimeMillis();
@@ -70,14 +65,15 @@ public class MainActivity extends AppCompatActivity {
             ((View) stopfab).setVisibility(View.VISIBLE);
             plusbtn.setVisibility(View.INVISIBLE);
             minusbtn.setVisibility(View.INVISIBLE);
-            led.setBackgroundColor(getResources().getColor((R.color.colorPrimaryDark)));
             progressLedR.setProgress(0);
             progressLedL.setProgress(0);
+            led.setBackgroundColor(getResources().getColor((R.color.colorPrimaryDark)));
             progressLedR.setProgressTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryDark)));
             progressLedL.setProgressTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryDark)));
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         };
+        startfab.setOnClickListener(start);
 
         View.OnClickListener pause = view -> {
             timebuff += millisecondtime;
@@ -93,8 +89,6 @@ public class MainActivity extends AppCompatActivity {
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(getResources().getColor(R.color.colorAccent));
         };
-
-        startfab.setOnClickListener(start);
         stopfab.setOnClickListener(pause);
 
         plusbtn.setOnClickListener(v -> {
@@ -147,26 +141,4 @@ public class MainActivity extends AppCompatActivity {
             beephandler.postDelayed(this, pref.getLong("interval", 30000));
         }
     };
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }
