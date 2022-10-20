@@ -1,6 +1,7 @@
 package com.fexed.intervaltimer;
 
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,6 +9,7 @@ import android.os.SystemClock;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,14 +17,16 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private long millisecondtime, starttime, updatetime, timebuff = 0L;
+    private long millisecondtime, starttime, lastbeep, updatetime, timebuff = 0L;
     private int s, m, millis;
     private Handler updatehandler, beephandler;
     private TextView timetxtv, intervaltxtv;
+    private ProgressBar progressLedR, progressLedL;
     private MediaPlayer mp;
     private SharedPreferences pref;
 
@@ -46,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.setStatusBarColor(getResources().getColor(R.color.colorAccent));
 
+        progressLedR = findViewById(R.id.progressLedR);
+        progressLedL = findViewById(R.id.progressLedL);
         timetxtv = findViewById(R.id.timetext);
         intervaltxtv = findViewById(R.id.intervaltext);
         updatehandler = new Handler();
@@ -57,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
         View.OnClickListener start = view -> {
             starttime = SystemClock.uptimeMillis();
+            lastbeep = starttime;
             updatehandler.postDelayed(updaterrunnable, 0);
             beephandler.postDelayed(beeprunnable, pref.getLong("interval", 30000));
             ((View) startfab).setVisibility(View.INVISIBLE);
@@ -64,6 +71,10 @@ public class MainActivity extends AppCompatActivity {
             plusbtn.setVisibility(View.INVISIBLE);
             minusbtn.setVisibility(View.INVISIBLE);
             led.setBackgroundColor(getResources().getColor((R.color.colorPrimaryDark)));
+            progressLedR.setProgress(0);
+            progressLedL.setProgress(0);
+            progressLedR.setProgressTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryDark)));
+            progressLedL.setProgressTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryDark)));
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         };
@@ -76,6 +87,8 @@ public class MainActivity extends AppCompatActivity {
             ((View) stopfab).setVisibility(View.INVISIBLE);
             plusbtn.setVisibility(View.VISIBLE);
             minusbtn.setVisibility(View.VISIBLE);
+            progressLedR.setProgressTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+            progressLedL.setProgressTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
             led.setBackgroundColor(getResources().getColor((R.color.colorAccent)));
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(getResources().getColor(R.color.colorAccent));
@@ -89,13 +102,11 @@ public class MainActivity extends AppCompatActivity {
             pref.edit().putLong("interval", (interval ==  6000 ? 5000 : interval)).apply();
             intervaltxtv.setText(strFromMillis(pref.getLong("interval", 30000)));
         });
-        minusbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                long interval = pref.getLong("interval", 30000) - 5000;
-                pref.edit().putLong("interval", (interval <  1000 ? 1000 : interval)).apply();
-                intervaltxtv.setText(strFromMillis(pref.getLong("interval", 30000)));
-            }
+
+        minusbtn.setOnClickListener(v -> {
+            long interval = pref.getLong("interval", 30000) - 5000;
+            pref.edit().putLong("interval", (interval <  1000 ? 1000 : interval)).apply();
+            intervaltxtv.setText(strFromMillis(pref.getLong("interval", 30000)));
         });
 
     }
@@ -111,6 +122,12 @@ public class MainActivity extends AppCompatActivity {
 
             timetxtv.setText("" + String.format("%02d", m) + ":"+ String.format("%02d", s));
             updatehandler.postDelayed(this, 0);
+
+            float left = (lastbeep + pref.getLong("interval", 30000)) - SystemClock.uptimeMillis();
+            float perc = ((left) * 100) / (pref.getLong("interval", 30000));
+
+            progressLedR.setProgress(100 - Math.round(perc));
+            progressLedL.setProgress(100 - Math.round(perc));
         }
     };
 
@@ -125,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
     public Runnable beeprunnable = new Runnable() {
         public void run() {
             mp.start();
+            lastbeep = SystemClock.uptimeMillis();
             beephandler.postDelayed(this, pref.getLong("interval", 30000));
         }
     };
