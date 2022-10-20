@@ -8,7 +8,7 @@ import android.os.Handler;
 import android.os.SystemClock;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import android.os.Vibrator;
 
 import android.view.View;
 import android.view.Menu;
@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar progressLedR, progressLedL;
     private MediaPlayer mp;
     private SharedPreferences pref;
+    private Vibrator vibrator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.setStatusBarColor(getResources().getColor(R.color.colorAccent));
 
+        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         progressLedR = findViewById(R.id.progressLedR);
         progressLedL = findViewById(R.id.progressLedL);
         timetxtv = findViewById(R.id.timetext);
@@ -140,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
     public Runnable beeprunnable = new Runnable() {
         public void run() {
             mp.start();
+            vibrator.vibrate(250);
             lastbeep = SystemClock.uptimeMillis();
             beephandler.postDelayed(this, pref.getLong("interval", 30000));
         }
