@@ -8,7 +8,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/fedex/StudioProjects/IntervalTimer/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/fedex/StudioProjects/IntervalTimer/app/src/main/res/drawable-night/add_b.xml" value="0.267" />
+        <entry key="..\:/Users/fedex/StudioProjects/IntervalTimer/app/src/main/res/drawable-night/remove_b.xml" value="0.267" />
+        <entry key="..\:/Users/fedex/StudioProjects/IntervalTimer/app/src/main/res/drawable/add_b.xml" value="0.267" />
+        <entry key="..\:/Users/fedex/StudioProjects/IntervalTimer/app/src/main/res/layout/activity_main.xml" value="0.29528985507246375" />
         <entry key="..\:/Users/fedex/StudioProjects/IntervalTimer/app/src/main/res/menu/menu_main.xml" value="0.18541666666666667" />
       </map>
     </option>
