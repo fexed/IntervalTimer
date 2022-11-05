@@ -1,4 +1,4 @@
-package com.fexed.intervaltimer;
+package com.fexed.minimaltimer;
 
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         updatehandler = new Handler();
         beephandler = new Handler();
         mp = MediaPlayer.create(MainActivity.this, R.raw.beep);
-        pref = this.getSharedPreferences("com.fexed.intervaltimer", MODE_PRIVATE);
+        pref = this.getSharedPreferences("com.fexed.minimaltimer", MODE_PRIVATE);
 
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
